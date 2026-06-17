@@ -40,7 +40,6 @@ def download_soundcloud(url):
         except Exception as e:
             print(f"Cover download failed: {e}")
 
-    # برگرداندن یک پکیج کامل از اطلاعات به ربات تلگرام
     return {
         "audio_path": audio_filepath,
         "thumb_path": thumb_filepath,
@@ -54,10 +53,10 @@ async def handle_start(client, message):
     await message.reply_text('سلام! خوش آمدید. 🎵\nلطفاً لینک آهنگ مورد نظرتان از ساندکلود را بفرستید تا آن را دانلود کنم.')
 
 
-@Client.on_message(filters.regex(r'soundcloud\.com') & filters.private)
+@Client.on_message(filters.regex(r'soundcloud\.com') & (filters.private | filters.group))
 async def handle_soundcloud_link(client, message):
     url = message.text.strip()
-    status_msg = await message.reply_text("⏳ در حال دریافت اطلاعات آهنگ و کاور...")
+    status_msg = await message.reply_text("⏳ در حال دریافت اطلاعات آهنگ و دانلود...")
 
     data = None
     try:
@@ -67,7 +66,7 @@ async def handle_soundcloud_link(client, message):
         if not audio_path or not os.path.exists(audio_path):
             raise Exception("فایل صوتی یافت نشد.")
 
-        await status_msg.edit_text("📤 در حال آپلود آهنگ در تلگرام... 🎵")
+        await status_msg.edit_text("📤 در حال آپلود آهنگ... 🎵")
 
         await message.reply_audio(
             audio=audio_path,
@@ -75,12 +74,12 @@ async def handle_soundcloud_link(client, message):
             title=data.get("title"),
             performer=data.get("performer"),
             duration=data.get("duration"),
-            caption=f"🎧 **{data.get('title')}**\n👤 {data.get('performer')}\n\n✅ دانلود شده توسط ربات ما"
+            caption=f"🎧 **{data.get('title')}**\n👤 {data.get('performer')}"
         )
 
     except Exception as e:
         print(f"Error: {e}")
-        await message.reply_text("❌ مشکلی در دانلود پیش آمد. مطمئن شوید لینک عمومی است.")
+        await message.reply_text("❌ مشکلی در دانلود پیش آمد. مطمئن شوید لینک صحیح است.")
 
     finally:
         await status_msg.delete()
@@ -90,7 +89,3 @@ async def handle_soundcloud_link(client, message):
                 os.remove(data.get("audio_path"))
             if data.get("thumb_path") and os.path.exists(data.get("thumb_path")):
                 os.remove(data.get("thumb_path"))
-
-@Client.on_message(filters.command('start') & filters.private)
-async def handle_start(client, message):
-    await message.reply_text('سلام! 🎵\nلینک آهنگ از ساندکلود رو بفرست تا با کاور اصلی برات دانلودش کنم.')
