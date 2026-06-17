@@ -1,0 +1,12 @@
+config.py
+
+*.sqlite
+*.session
+*.session-journal
+
+__pycache__/
+*.pyc
+*.idea
+
+venv/
+env/

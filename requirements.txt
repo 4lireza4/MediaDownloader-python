@@ -1,0 +1,5 @@
+pyromod~=3.1.6
+jdatetime~=5.2.0
+Pyrogram~=2.0.106
+peewee~=3.18.2
+requests
