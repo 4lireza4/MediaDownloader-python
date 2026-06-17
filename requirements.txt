@@ -3,3 +3,4 @@ jdatetime~=5.2.0
 Pyrogram~=2.0.106
 peewee~=3.18.2
 requests
+yt-dlp==2026.6.9

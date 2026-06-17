@@ -26,7 +26,7 @@ def download_soundcloud(url):
 
     title = info.get('title', 'Unknown Title')
     performer = info.get('uploader', 'Unknown Artist')
-    duration = info.get('duration', 0)
+    duration = int(info.get('duration', 0))
     thumb_url = info.get('thumbnail')
 
     thumb_filepath = None
