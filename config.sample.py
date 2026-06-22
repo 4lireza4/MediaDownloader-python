@@ -5,3 +5,4 @@ BOT_TOKEN = "your_bot_token_here"
 #     "scheme": "socks5",
 #     "hostname": "127.0.0.1", "port": 10808,
 # }
+admin_ids = []
