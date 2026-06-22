@@ -3,6 +3,7 @@ from pyromod import Client, Message
 from logging import getLogger
 import asyncio
 import os
+import re
 import yt_dlp
 import requests
 
@@ -53,9 +54,13 @@ async def handle_start(client, message):
     await message.reply_text('سلام! خوش آمدید. 🎵\nلطفاً لینک آهنگ مورد نظرتان از ساندکلود را بفرستید تا آن را دانلود کنم.')
 
 
-@Client.on_message(filters.regex(r'soundcloud\.com') & (filters.private | filters.group))
+@Client.on_message(filters.regex(r'(?:on\.)?soundcloud\.com') & (filters.private | filters.group))
 async def handle_soundcloud_link(client, message):
-    url = message.text.strip()
+    url_match = re.search(r'https?://[^\s]+soundcloud\.com[^\s]*', message.text)
+    if not url_match:
+        await message.reply_text("❌ لینک ساندکلود یافت نشد.")
+        return
+    url = url_match.group(0)
     status_msg = await message.reply_text("⏳ در حال دریافت اطلاعات آهنگ و دانلود...")
 
     data = None

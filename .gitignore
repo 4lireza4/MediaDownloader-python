@@ -7,6 +7,7 @@ config.py
 __pycache__/
 *.pyc
 *.idea
+*.md
 
 venv/
 env/
