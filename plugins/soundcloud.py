@@ -60,7 +60,10 @@ async def handle_soundcloud_link(client, message):
     if not url_match:
         await message.reply_text("❌ لینک ساندکلود یافت نشد.")
         return
-    url = url_match.group(0)
+    from urllib.parse import urlparse, urlunparse
+    raw = url_match.group(0)
+    parsed = urlparse(raw)
+    url = urlunparse(parsed._replace(query='', fragment=''))
     status_msg = await message.reply_text("⏳ در حال دریافت اطلاعات آهنگ و دانلود...")
 
     data = None
