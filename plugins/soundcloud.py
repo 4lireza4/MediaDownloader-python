@@ -56,7 +56,7 @@ async def handle_start(client, message):
 
 @Client.on_message(filters.regex(r'(?:on\.)?soundcloud\.com') & (filters.private | filters.group))
 async def handle_soundcloud_link(client, message):
-    url_match = re.search(r'https?://[^\s]+soundcloud\.com[^\s]*', message.text)
+    url_match = re.search(r'https?://(?:[a-zA-Z0-9-]+\.)?soundcloud\.com[^\s]*', message.text)
     if not url_match:
         await message.reply_text("❌ لینک ساندکلود یافت نشد.")
         return
