@@ -6,15 +6,18 @@ import os
 import re
 import yt_dlp
 import requests
+import glob
 
 _logger = getLogger(__name__)
 
 
 def download_soundcloud(url):
+    current_dir = os.getcwd()
     base_name = f"track_{os.urandom(4).hex()}"
+    base_path = os.path.join(current_dir, base_name)
 
     ydl_opts = {
-        'outtmpl': f'{base_name}.%(ext)s',
+        'outtmpl': f'{base_path}.%(ext)s',
         'format': 'bestaudio/best',
         'quiet': True,
         'no_warnings': True,
@@ -23,7 +26,12 @@ def download_soundcloud(url):
 
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         info = ydl.extract_info(url, download=True)
-        audio_filepath = ydl.prepare_filename(info)
+
+    downloaded_files = glob.glob(f"{base_path}.*")
+    if not downloaded_files:
+        raise Exception("فایل توسط yt-dlp روی هارد ذخیره نشد.")
+
+    audio_filepath = downloaded_files[0]
 
     title = info.get('title', 'Unknown Title')
     performer = info.get('uploader', 'Unknown Artist')
@@ -35,7 +43,7 @@ def download_soundcloud(url):
         try:
             response = requests.get(thumb_url, timeout=10)
             if response.status_code == 200:
-                thumb_filepath = f"{base_name}_cover.jpg"
+                thumb_filepath = os.path.join(current_dir, f"{base_name}_cover.jpg")
                 with open(thumb_filepath, 'wb') as f:
                     f.write(response.content)
         except Exception as e:
